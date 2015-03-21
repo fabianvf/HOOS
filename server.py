@@ -13,6 +13,11 @@ URL = 'https://osf.io/api/v1/search/'
 app = Flask(__name__)
 
 
+@app.route('/')
+def index():
+    with open('tree.html') as f:
+        return f.read()
+
 @app.route('/contributor/')
 def search_contributor():
     guid = request.args.get('guid')
@@ -29,12 +34,12 @@ def search_contributor():
 
     results = requests.post(URL, headers=HEADERS, data=data).json()
 
-    return json.dumps([{
-        'title': x['title'],
+    return json.dumps({'children':[{
+        'name': x['title'],
         'contributors': x['contributors'],
         'contributors_url': x['contributors_url'],
         'url': x['url']
-    } for x in results['results']], indent=4)
+    } for x in results['results']]})
 
 
 @app.route('/node/')
@@ -51,9 +56,9 @@ def search_node():
     results = requests.post(URL, headers=HEADERS, data=data).json()
 
     return json.dumps([{
-        'contributors': x['contributors'],
+        'children': x['contributors'],
         'contributors_url': x['contributors_url']
-    } for x in results['results']], indent=4)
+    } for x in results['results']])
 
 
 if __name__ == '__main__':
