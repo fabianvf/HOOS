@@ -34,12 +34,25 @@ def search_contributor():
 
     results = requests.post(URL, headers=HEADERS, data=data).json()
 
-    return json.dumps({'children':[{
-        'name': x['title'],
-        'contributors': x['contributors'],
-        'contributors_url': x['contributors_url'],
-        'url': x['url']
-    } for x in results['results']]})
+    val = []
+
+    for x in results['results']:
+        contributors = []
+        for idx,y in enumerate(x['contributors']):
+            contributors.append({ 'name': y, 'url': x['contributors_url'][idx] })
+        val.append({
+            'name': x['title'],
+            'children': contributors,
+            'url': x['url']
+        })
+    return json.dumps({'children': val})
+
+    #return json.dumps({'children':[{
+    #    'name': x['title'],
+    #    'children': [{'name': x['contributors'],
+    #    'url': x['contributors_url']}],
+    #    'url': x['url']
+    #} for x in results['results']]})
 
 
 @app.route('/node/')
