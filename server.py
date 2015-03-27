@@ -39,7 +39,8 @@ def search_contributor():
     for x in results['results']:
         contributors = []
         for idx,y in enumerate(x['contributors']):
-            contributors.append({ 'name': y, 'url': x['contributors_url'][idx] })
+            #Not all contributors have URLs associated with them?
+            contributors.append({ 'name': y, 'url': x['contributors_url'][idx] if idx < len(x['contributors_url']) else '' })
         val.append({
             'name': x['title'],
             'children': contributors,
