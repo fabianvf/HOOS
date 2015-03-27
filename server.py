@@ -39,7 +39,7 @@ def search_contributor():
     for x in results['results']:
         contributors = []
         for idx,y in enumerate(x['contributors']):
-            #Not all contributors have URLs associated with them?
+            #Not all contributors have URLs associated with them? How does this affect correlation?
             contributors.append({ 'name': y, 'url': x['contributors_url'][idx] if idx < len(x['contributors_url']) else '' })
         val.append({
             'name': x['title'],
