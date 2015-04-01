@@ -40,7 +40,7 @@ def search_contributor():
         contributors = []
         for idx,y in enumerate(x['contributors']):
             #Not all contributors have URLs associated with them? How does this affect correlation?
-            contributors.append({ 'name': y, 'url': x['contributors_url'][idx] if idx < len(x['contributors_url']) else '' })
+            contributors.append({ 'name': y['fullname'], 'url': y['url'] })
         val.append({
             'name': x['title'],
             'children': contributors,
@@ -76,8 +76,9 @@ def search_node():
 
 
 if __name__ == '__main__':
-    app.run(
-        host='0.0.0.0',
-        port=1337,
-        debug=True
+     app.run(
+         host='0.0.0.0',
+         port=1337,
+         debug=True
     )
+    #app.run()
