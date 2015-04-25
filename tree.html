@@ -49,24 +49,23 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-data = $.getJSON("http://localhost:1337/contributor/?guid=/rnizy/");
+data = $.getJSON("http://localhost:5000/contributor/?guid=/rnizy/");
 console.log(data);
-d3.json("http://localhost:1337/contributor/?guid=/rnizy/", function(error, flare) {
+d3.json("http://localhost:5000/contributor/?guid=/rnizy/", function(error, flare) {
   root = flare;
   root.x0 = height / 2;
   root.y0 = 0;
-
-  function collapse(d) {
-    if (d.children) {
-      d._children = d.children;
-      d._children.forEach(collapse);
-      d.children = null;
-    }
-  }
-
   root.children.forEach(collapse);
   update(root);
 });
+
+function collapse(d) {
+  if (d.children) {
+    d._children = d.children;
+    d._children.forEach(collapse);
+    d.children = null;
+  }
+}
 
 d3.select(self.frameElement).style("height", "800px");
 
@@ -103,7 +102,9 @@ function update(source) {
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
       .duration(duration)
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+      .attr("transform", function(d) {
+        return "translate(" + d.y + "," + d.x + ")";
+      });
 
   nodeUpdate.select("circle")
       .attr("r", 4.5)
@@ -159,14 +160,34 @@ function update(source) {
 
 // Toggle children on click.
 function click(d) {
+  /*
+   * If no children, append some after a server call.
+   */
+  if(!d.children && !d._children) {
+    $.getJSON("http://localhost:5000/contributor/?guid=" + d.url, function(moreData) {
+      if(typeof(moreData.children) !== "undefined") {
+        d._children = moreData.children;
+        d._children.forEach(collapse);
+        toggle(d);
+      }
+    });
+  }
+  else {
+    toggle(d);
+  }
+}
+
+function toggle(d) {
   if (d.children) {
     d._children = d.children;
     d.children = null;
-  } else {
+    update(d);
+  }
+  else {
     d.children = d._children;
     d._children = null;
+    update(d);
   }
-  update(d);
 }
 
 </script>
