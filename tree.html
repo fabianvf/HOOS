@@ -49,9 +49,9 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-data = $.getJSON("http://localhost:1337/contributor/?guid=/rnizy/");
+data = $.getJSON("http://localhost:5000/contributor/?guid=/rnizy/");
 console.log(data);
-d3.json("http://localhost:1337/contributor/?guid=/rnizy/", function(error, flare) {
+d3.json("http://localhost:5000/contributor/?guid=/rnizy/", function(error, flare) {
   root = flare;
   root.x0 = height / 2;
   root.y0 = 0;
@@ -164,7 +164,7 @@ function click(d) {
    * If no children, append some after a server call.
    */
   if(!d.children && !d._children) {
-    $.getJSON("http://localhost:1337/contributor/?guid=" + d.url, function(moreData) {
+    $.getJSON("http://localhost:5000/contributor/?guid=" + d.url, function(moreData) {
       if(typeof(moreData.children) !== "undefined") {
         d._children = moreData.children;
         d._children.forEach(collapse);
